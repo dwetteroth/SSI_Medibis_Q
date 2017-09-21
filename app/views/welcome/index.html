@@ -1,0 +1,128 @@
+<div id="status"></div>
+<div id="message"></div>
+<div id="messages"></div>
+<div id="message-form"></div>
+<div id="close"></div>
+
+
+<script src="https://rawgit.com/mindspank/qsocks/master/qsocks.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<style>
+
+  iframe {
+    width: 100%;
+    height: 900px;
+  }
+
+</style>
+<script>
+  var socket = {};
+
+  window.onload = function() {
+
+    // Get references to elements on the page.
+    var form = document.getElementById('message-form');
+    var messageField = document.getElementById('message');
+    var messagesList = document.getElementById('messages');
+    var socketStatus = document.getElementById('status');
+    var closeBtn = document.getElementById('close');
+
+    // The rest of the code in this tutorial will go here...
+
+    socket = new WebSocket('wss://qlikdevavm.ssird.corp/app/%3Ftransient%3D?reloadUri=https://qlikdevavm.ssird.corp/dev-hub/engine-api-explorer');
+
+    socket.onopen = function(event) {
+
+      socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
+      socketStatus.className = 'open';
+    };
+    socket.onerror = function(error) {
+      console.log('MASHEY - WebSocket Error: ' + error);
+    };
+
+
+
+    
+
+
+  };
+
+  // const qsocks = require('qsocks')
+  // const config = {
+  //   host: 'qlikdevavm.ssird.corp',
+  //   // host: '192.168.60.195',
+  //   isSecure: true,
+  //   rejectUnauthorized: false,
+  //   origin: 'localhost'
+  // }
+  // console.log("BEFORE OPENING", qsocks);
+  // console.log("BEFORE OPENING", config);
+  // qsocks.Connect(config).then(global=> {
+  //   console.log("CONNECTED TO SENSE", global);
+  // });
+
+
+
+
+
+
+  //
+  // var config = {
+  //    host: 'qlikdevavm.ssird.corp',
+  //    isSecure: true,
+  //    rejectUnauthorized: false
+  //  };
+  //
+  // // Doc list
+  // qsocks.Connect(config).then(global => {
+  //   var val = global.getDocList();
+  //   // debugger;
+  //   return val;
+  // }).then( doc=> {
+  //   // debugger;
+  //   console.log("Apps Opened", doc);
+  //   doc.connection.close();
+  // });
+  //
+  // // Stream List
+  // qsocks.Connect(config).then(global => {
+  //   var val = global.getStreamList();
+  //   return val;
+  // }).then( doc=> {
+  //   console.log("Streams Opened", doc);
+  //
+  //   doc.connection.close();
+  // });
+  //
+  // // Stream List
+  // qsocks.Connect(config).then(global => {
+  //   var val = global.getDocList();
+  //   return val;
+  // }).then( doc=> {
+  //   console.log("DOCs Opened", doc[31]);
+  //   //debugger;
+  //   doc.connection.close();
+  // });
+  //
+  //
+  // // Sheets List
+  // qsocks.Connect(config).then(global => {
+  //   // var val = global.getDocList();
+  //   var val = global.getListOfFunctions();
+  //   return val;
+  // }).then( doc=> {
+  //   console.log("DOCs Opened", doc[31]);
+  //   debugger;
+  //   doc.connection.close();
+  // });
+  //
+  //
+  //
+  //
+
+
+</script>
+
+<!-- <iframe src="https://qlikdevavm.ssird.corp/single/?appid=ed58d9de-eb6a-4d1e-be31-1fbcf57aa762&sheet=3a34eb3f-f4c1-496d-b11f-e554162931ff&select=clearall" frameborder="0"></iframe> -->
+
+<!-- d429bc66-ff3b-4d63-bb51-249d9c14c9ed -->
