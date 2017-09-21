@@ -29,21 +29,118 @@
 
     // The rest of the code in this tutorial will go here...
 
-    socket = new WebSocket('wss://qlikdevavm.ssird.corp/app/%3Ftransient%3D?reloadUri=https://qlikdevavm.ssird.corp/dev-hub/engine-api-explorer');
+    var websocketURL = 'wss://qlikdevavm.ssird.corp/app/%3Ftransient%3D?reloadUri=https://qlikdevavm.ssird.corp/dev-hub/engine-api-explorer';
 
-    socket.onopen = function(event) {
-
-      socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
-      socketStatus.className = 'open';
-    };
-    socket.onerror = function(error) {
-      console.log('MASHEY - WebSocket Error: ' + error);
+    var socketOnClose = function(msg) {
+      console.log('websocket disconnected - waiting for connection');
+      websocketWaiter();
     };
 
+    var socketOnMessage = function(msg) {
+      console.log("RECIEVED ");
+      console.log(msg);
+    };
+
+    var socketOnOpen = function(msg) {
+        console.log("websocket opened");
+        qlikSendAll();
+    };
+
+    function websocketWaiter(){
+        setTimeout(function(){
+            socket = new WebSocket(websocketURL);
+            socket.onopen = socketOnOpen;
+            socket.onclose = socketOnClose;
+            socket.onmessage = socketOnMessage;
+        }, 1000);
+    };
+
+    websocketWaiter();
+
+    //
+    // socket.onopen = function(event) {
+    //   socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
+    //   socketStatus.className = 'open';
+    // };
+    //
+    // socket.onmessage = function(str) {
+    //   console.log("Someone sent: ", str);
+    // };
+    //
+    // socket.onerror = function(error) {
+    //   console.log('MASHEY - WebSocket Error: ' + error);
+    // };
 
 
-    
+    function qlikSendAll() {
+      // DocLIST
+      console.log("GET DOC LIST");
+      socket.send(JSON.stringify(
+        {"handle":-1,"method":"GetDocList","params":[],"outKey":-1,"id":1}
+      ));
 
+      // Open DOC
+      console.log("OPEN DOC");
+      socket.send(JSON.stringify(
+        {"method":"OpenDoc","handle":-1,"params":["ed58d9de-eb6a-4d1e-be31-1fbcf57aa762"],"outKey":-1,"id":2}
+      ));
+
+      console.log("CREATE SESSION");
+      socket.send(JSON.stringify(
+        {
+        	"method": "CreateSessionObject",
+        	"handle": 1,
+        	"params": [
+        		{
+        			"qInfo": {
+        				"qType": "SheetList"
+        			},
+        			"qAppObjectListDef": {
+        				"qType": "sheet",
+        				"qData": {
+        					"title": "/qMetaDef/title",
+        					"description": "/qMetaDef/description",
+        					"thumbnail": "/thumbnail",
+        					"cells": "/cells",
+        					"rank": "/rank",
+        					"columns": "/columns",
+        					"rows": "/rows"
+        				}
+        			}
+        		}
+        	],
+        	"outKey": -1,
+        	"id": 3
+        }
+      ));
+
+      console.log("GRAB SHEETS");
+      socket.send(JSON.stringify(
+        {
+        	"method": "GetLayout",
+        	"handle": 2,
+        	"params": [],
+        	"outKey": -1,
+        	"id": 4
+        }
+      ));
+
+
+    };
+
+
+
+
+      // [{"name":"SHEETLIST","method":"CreateSessionObject","handle":"${dochandle}","params":[{"qInfo":{"qType":"SheetList"},"qAppObjectListDef":{"qType":"sheet","qData":{"title":"/qMetaDef/title","description":"/qMetaDef/description","thumbnail":"/thumbnail","cells":"/cells","rank":"/rank","columns":"/columns","rows":"/rows"}}}]},{"method":"GetLayout","handle":"${SHEETLIST.result.qReturn.qHandle}","params":[]}]
+
+
+
+
+
+
+
+    // {"handle": -1,"method": "GetDocList","params": [],"outKey": -1,"id": 1}
+    // {"method":"OpenDoc","handle":-1,"params":["ed58d9de-eb6a-4d1e-be31-1fbcf57aa762"],"outKey":-1,"id":2}
 
   };
 
